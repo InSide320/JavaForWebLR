@@ -3,30 +3,34 @@ package com.example.demo;
 import com.example.demo.config.AppConfig;
 import com.example.demo.services.MyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        SpringApplication.run(Application.class, args);
 
-		MyService myService = context.getBean(MyService.class);
-
-        // Виклик методу, який викликає аспект beforeMyServiceMethods
-        myService.simpleMethod();
-
-        // Виклик методу, який викликає аспект afterMethodsWithResponseBody
-        myService.methodWithResponseBody();
-
-        // Виклик методу, який викликає аспект afterReturningMethodsWithStringArgument
-        try {
-            myService.methodWithException("Test Input");
-        } catch (RuntimeException e) {
-            System.err.println(e.getMessage());
-        }
+//		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+//
+//		MyService myService = context.getBean(MyService.class);
+//
+//        // Виклик методу, який викликає аспект beforeMyServiceMethods
+//        myService.simpleMethod();
+//
+//        // Виклик методу, який викликає аспект afterMethodsWithResponseBody
+//        myService.methodWithResponseBody();
+//
+//        // Виклик методу, який викликає аспект afterReturningMethodsWithStringArgument
+//        try {
+//            myService.methodWithException("Test Input");
+//        } catch (RuntimeException e) {
+//            System.err.println(e.getMessage());
+//        }
 
 
         // Виклик методу, який викликає аспект afterThrowingMethodsWithStringArgument
@@ -43,5 +47,16 @@ public class Application {
 //
 //		// Close the context
 //		context.close();
+    }
+
+    @Bean
+    public CommandLineRunner run(MyService myService) {
+        return args -> {
+            // Викликайте методи MyService тут
+            myService.saveEntities();
+            myService.retrieveEntities();
+            myService.updateEntities();
+            myService.deleteEntities();
+        };
     }
 }
